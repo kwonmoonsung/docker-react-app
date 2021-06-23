@@ -3,14 +3,28 @@ sudo: required
 language: generic
 
 services:
- - docker
+  - docker
 
 before_install:
- - echo "start creating an image with dockerfile"
- - docker build -t kwonmoonsung/docker-react-app -f Dockerfile.dev .
+  - echo "start creating an image with dockerfile"
+  - docker build -t kwonmoonsung/docker-react-app -f Dockerfile.dev .
 
 script:
- - docker run -e CI=true kwonmoonsung/docker-react-app npm run test -- --coverage
+  - docker run -e CI=true kwonmoonsung/docker-react-app npm run test -- --coverage
 
 after_success:
- - echo "Test success!"
+  - echo "Test success!"
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-northeast-2"
+  app: "docker-react-app"
+  env: "DockerReactApp-env"
+  bucket_name: "elasticbeanstalk-ap-northeast-2-466346727417"
+  bucket_path: "elasticbeanstalk-ap-northeast-2-466346727417"
+  on:
+    branch: master
+
+access_key_id: $AWS_ACCESS_KEY
+secret_access_key: $AWS_SECRET_ACCESS_KEY
+
